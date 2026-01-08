@@ -5,7 +5,7 @@ import pandas as pd
 # Configuración de la página
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
-st.title("📊 Calculadora Financiera Real")
+st.title("📊 Monto compuesto con TN capitalizable")
 st.markdown("### Dr. Carlos Aliaga Valdez")
 
 # --- BARRA LATERAL PARA ENTRADA DE DATOS ---
@@ -38,4 +38,5 @@ data = pd.DataFrame({
     "Categoría": ["Capital Inicial", "Intereses"],
     "Monto": [p, interes]
 })
+
 st.bar_chart(data=data, x="Categoría", y="Monto")
