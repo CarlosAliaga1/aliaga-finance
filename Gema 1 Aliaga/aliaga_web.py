@@ -5,7 +5,6 @@ st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
 st.markdown("""
     <style>
-    /* Centrado del reporte y control de ancho */
     .block-container {
         max-width: 900px;
         padding-top: 1rem;
@@ -13,7 +12,7 @@ st.markdown("""
         margin: auto;
     }
     
-    /* ENCABEZADO ROJO: Simetría de 80px de alto */
+    /* ENCABEZADO ROJO INTENSO: 80px de alto */
     .caja-roja {
         background-color: #FF0000; 
         color: #FFFFFF; 
@@ -32,7 +31,7 @@ st.markdown("""
         text-align: center;
     }
     
-    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Posicionamiento 38px) */
+    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez */
     .marca-autor {
         font-size: 38px !important;
         font-weight: 900;
@@ -43,7 +42,7 @@ st.markdown("""
         font-family: 'Arial Black', sans-serif;
     }
     
-    /* RESULTADOS AZUL INTENSO: Simetría de 80px de alto */
+    /* RESULTADOS AZUL INTENSO: 80px de alto */
     .caja-azul {
         background-color: #0000FF; 
         color: #FFFFFF; 
@@ -86,20 +85,27 @@ def limpiar_pantalla():
 st.markdown("<div class='caja-roja'><p class='titulo-grande'>MONTO COMPUESTO CON TASA NOMINAL CAPITALIZABLE</p></div>", unsafe_allow_html=True)
 st.markdown("<span class='marca-autor'>Dr. Carlos Aliaga Valdez</span>", unsafe_allow_html=True)
 
-# --- BARRA LATERAL: CONFIGURACIÓN Y FLUJO DE DATOS ---
+# --- BARRA LATERAL: CONFIGURACIÓN CON CAMPOS QUE QUEDAN EN BLANCO ---
 with st.sidebar:
     st.header("Configuración")
     rid = st.session_state.reset_id
     
-    # Navegación secuencial mediante TAB
-    p = st.number_input("1. Capital Principal (P)", min_value=0.0, value=0.0, key=f"p_{rid}")
-    tn = st.number_input("2. Tasa Nominal (j %)", min_value=0.0, value=0.0, format="%.2f", key=f"tn_{rid}")
+    # Usamos text_input para permitir que el campo quede vacío al resetear
+    p_str = st.text_input("1. Capital Principal (P)", value="", key=f"p_{rid}")
+    tn_str = st.text_input("2. Tasa Nominal (j %)", value="", key=f"tn_{rid}")
+    
+    # Estos se mantienen numéricos por precisión de días
     d_tn = st.number_input("3. Periodo de la TN (días)", min_value=0, value=0, key=f"dtn_{rid}")
     d_cap = st.number_input("4. Periodo de Capitalización (días)", min_value=0, value=0, key=f"dcap_{rid}")
     plazo = st.number_input("5. Plazo del depósito (días)", min_value=0, value=0, key=f"plazo_{rid}")
     
-    if d_cap == 0 and rid > 0:
-        st.warning("⚠️ El periodo de capitalización debe ser mayor a 0 para calcular.")
+    # Conversión segura de texto a número
+    try:
+        p = float(p_str) if p_str else 0.0
+        tn = float(tn_str) if tn_str else 0.0
+    except ValueError:
+        p, tn = 0.0, 0.0
+        st.error("Por favor, ingrese solo números.")
 
     st.write("---")
     st.button("🔄 LIMPIAR PARA NUEVOS DATOS", on_click=limpiar_pantalla)
@@ -122,8 +128,7 @@ with col1: st.metric("Frecuencia (m)", f"{m:.8f}")
 with col2: st.metric("Capitalizaciones (n)", f"{n:.8f}")
 with col3: st.metric("Tasa Efectiva", f"{i_ef:.8f}")
 
-# --- RESULTADOS FINALES CON IDENTIDAD VISUAL (AZUL) ---
-
+# --- RESULTADOS FINALES EN AZUL ---
 st.markdown(f"""
     <div class='caja-azul'>
         <p class='texto-azul'>MONTO COMPUESTO (S): {s:,.2f}</p>
