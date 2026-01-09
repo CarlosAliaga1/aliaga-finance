@@ -1,100 +1,99 @@
 import streamlit as st
 
-# 1. Configuración de página y CSS ultra-compacto
+# 1. Configuración de página y Estilos CSS Ultra-Compactos
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
 st.markdown("""
     <style>
-    /* Eliminación total de espacios sobrantes */
-    .block-container {padding-top: 0.5rem; padding-bottom: 0rem; max-width: 95%;}
-    .stMetric {padding: 2px !important; margin: 0px !important;}
-    hr {margin: 0.5rem 0 !important;}
+    /* Eliminación de márgenes para visualización completa en una pantalla */
+    .block-container {padding-top: 0rem; padding-bottom: 0rem; max-width: 95%;}
+    .stMetric {padding: 0px !important; margin: 0px !important;}
+    hr {margin: 0.3rem 0 !important;}
     
-    /* ROJO INTENSO para el Título (Compacto) */
+    /* Encabezado ROJO INTENSO - Todo Mayúsculas y Alineado */
     .fondo-rojo {
         background-color: #FF0000; 
         color: #FFFFFF; 
-        padding: 8px; 
-        border-radius: 8px; 
-        margin-bottom: 5px;
+        padding: 10px; 
+        border-radius: 5px; 
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
     }
     
-    /* AZUL INTENSO para los Resultados (Compacto) */
+    /* Resultados AZUL INTENSO */
     .fondo-azul {
         background-color: #0000FF; 
         color: #FFFFFF; 
-        padding: 8px; 
-        border-radius: 8px; 
+        padding: 10px; 
+        border-radius: 5px; 
         margin-bottom: 5px;
         text-align: center;
     }
     
-    /* Títulos y textos reducidos */
-    h1 {font-size: 22px !important; margin: 0px;}
-    h2 {font-size: 18px !important; margin: 0px; text-align: center;}
-    h3 {font-size: 16px !important; margin: 5px; text-align: center;}
+    h1 {font-size: 20px !important; margin: 0px; text-transform: uppercase; font-weight: bold;}
+    h2 {font-size: 16px !important; margin: 5px 0px; text-align: center;}
+    h3 {font-size: 15px !important; margin: 2px; text-align: center; font-weight: bold;}
     
-    /* Botón de limpieza */
+    /* Botón de limpieza personalizado */
     div.stButton > button { 
-        width: 100%; 
-        font-weight: bold;
-        padding: 2px;
-        color: #0000FF;
-        border: 2px solid #0000FF;
+        width: 100%; font-weight: bold; padding: 2px;
+        color: #0000FF; border: 2px solid #0000FF;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Lógica de Reseteo (Vuelve a cero)
+# 2. Lógica de Reseteo (Limpieza de campos)
 if "reset_id" not in st.session_state:
     st.session_state.reset_id = 0
 
-def limpiar_todo():
+def limpiar_datos():
     st.session_state.reset_id += 1
 
-# 3. Encabezado en ROJO INTENSO
-st.markdown("<div class='fondo-rojo'><h1>Monto compuesto con TN capitalizable</h1></div>", unsafe_allow_html=True)
+# 3. Interfaz Principal
+st.markdown("<div class='fondo-rojo'><h1>MONTO COMPUESTO CON TASA NOMINAL CAPITALIZABLE</h1></div>", unsafe_allow_html=True)
 st.markdown("<h2>Dr. Carlos Aliaga Valdez</h2>", unsafe_allow_html=True)
 
-# --- BARRA LATERAL (CAMPOS EN CERO) ---
+# --- BARRA LATERAL (ENTRADAS) ---
 with st.sidebar:
     st.header("Configuración")
     rid = st.session_state.reset_id
-    p = st.number_input("Capital Principal (P)", min_value=0.0, value=0.0, key=f"p_{rid}")
-    tasa_nominal = st.number_input("Tasa Nominal (j %)", min_value=0.0, value=0.0, format="%.2f", key=f"tn_{rid}")
-    dias_tn = st.number_input("Periodo de la TN (días)", min_value=0, value=0, key=f"dtn_{rid}")
-    dias_cap = st.number_input("Periodo de Capitalización (días)", min_value=1, value=1, key=f"dcap_{rid}")
-    plazo_total = st.number_input("Plazo del depósito (días)", min_value=0, value=0, key=f"plazo_{rid}")
     
-    st.button("🔄 LIMPIAR PARA NUEVOS DATOS", on_click=limpiar_todo)
+    # Valores vuelven a 0, excepto capitalización que queda en 1 por seguridad
+    p = st.number_input("Capital Principal (P)", min_value=0.0, value=0.0, key=f"p_{rid}")
+    tn = st.number_input("Tasa Nominal (j %)", min_value=0.0, value=0.0, format="%.2f", key=f"tn_{rid}")
+    d_tn = st.number_input("Periodo de la TN (días)", min_value=0, value=0, key=f"dtn_{rid}")
+    d_cap = st.number_input("Periodo de Capitalización (días)", min_value=1, value=1, key=f"dcap_{rid}")
+    plazo = st.number_input("Plazo del depósito (días)", min_value=0, value=0, key=f"plazo_{rid}")
+    
+    st.button("🔄 LIMPIAR PARA NUEVOS DATOS", on_click=limpiar_datos)
 
 # --- LÓGICA DE CÁLCULO ---
-if dias_cap > 0 and dias_tn > 0 and p > 0:
-    j = tasa_nominal / 100
-    m = dias_tn / dias_cap
-    n = plazo_total / dias_cap
-    i_efectiva = j / m
-    s = p * (1 + i_efectiva)**n
-    interes_i = s - p
+if d_cap > 0 and d_tn > 0 and p > 0:
+    j = tn / 100
+    m = d_tn / d_cap
+    n = plazo / d_cap
+    i_ef = j / m
+    s = p * (1 + i_ef)**n
+    interes = s - p
 else:
-    m, n, i_efectiva, s, interes_i = 0, 0, 0, 0, 0
+    m, n, i_ef, s, interes = 0.0, 0.0, 0.0, 0.0, 0.0
 
 # --- REPORTES DE SALIDA ---
-st.write("---")
 st.markdown("<h3>REPORTES DE SALIDA</h3>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1: st.metric("Frecuencia (m)", f"{m:.8f}")
 with col2: st.metric("Capitalizaciones (n)", f"{n:.8f}")
-with col3: st.metric("Tasa Efectiva", f"{i_efectiva:.8f}")
+with col3: st.metric("Tasa Efectiva", f"{i_ef:.8f}")
 
-# --- RESULTADOS FINALES EN AZUL INTENSO ---
-st.write("---")
+# --- RESULTADOS FINALES (AZUL INTENSO) ---
 st.markdown(f"""
     <div class='fondo-azul'>
         <h2 style='margin:0;'>MONTO COMPUESTO (S): {s:,.2f}</h2>
     </div>
     <div class='fondo-azul'>
-        <h2 style='margin:0;'>INTERÉS COMPUESTO (I): {interes_i:,.2f}</h2>
+        <h2 style='margin:0;'>INTERÉS COMPUESTO (I): {interes:,.2f}</h2>
     </div>
     """, unsafe_allow_html=True)
