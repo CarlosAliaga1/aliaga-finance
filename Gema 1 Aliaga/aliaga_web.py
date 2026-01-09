@@ -1,11 +1,11 @@
 import streamlit as st
 
-# 1. Configuración y Estética de Alta Gama Dr. Aliaga
+# 1. Configuración de Marca y Estética Premium Dr. Aliaga
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
 st.markdown("""
     <style>
-    /* Centrado y eliminación de desplazamiento (Scroll) */
+    /* Centrado del reporte y control de ancho */
     .block-container {
         max-width: 900px;
         padding-top: 1rem;
@@ -13,11 +13,11 @@ st.markdown("""
         margin: auto;
     }
     
-    /* ENCABEZADO ROJO: Alto simétrico a los reportes azules */
+    /* ENCABEZADO ROJO: Simetría de 80px de alto */
     .caja-roja {
         background-color: #FF0000; 
         color: #FFFFFF; 
-        height: 80px; /* Igual que los azules para simetría */
+        height: 80px; 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -32,7 +32,7 @@ st.markdown("""
         text-align: center;
     }
     
-    /* MARCA PERSONAL: Posicionamiento de autoría */
+    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Posicionamiento 38px) */
     .marca-autor {
         font-size: 38px !important;
         font-weight: 900;
@@ -43,7 +43,7 @@ st.markdown("""
         font-family: 'Arial Black', sans-serif;
     }
     
-    /* REPORTES AZUL INTENSO */
+    /* RESULTADOS AZUL INTENSO: Simetría de 80px de alto */
     .caja-azul {
         background-color: #0000FF; 
         color: #FFFFFF; 
@@ -60,7 +60,6 @@ st.markdown("""
         margin: 0;
     }
     
-    /* Estilo de la sección de reportes */
     .etiqueta-reporte {
         font-size: 22px !important;
         text-align: center;
@@ -76,33 +75,36 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Lógica de Reseteo (Limpieza total de campos)
+# 2. Lógica de Reseteo Integral
 if "reset_id" not in st.session_state:
     st.session_state.reset_id = 0
 
 def limpiar_pantalla():
     st.session_state.reset_id += 1
 
-# 3. Estructura de la Aplicación
+# 3. Estructura Visual
 st.markdown("<div class='caja-roja'><p class='titulo-grande'>MONTO COMPUESTO CON TASA NOMINAL CAPITALIZABLE</p></div>", unsafe_allow_html=True)
 st.markdown("<span class='marca-autor'>Dr. Carlos Aliaga Valdez</span>", unsafe_allow_html=True)
 
-# --- BARRA LATERAL (ENTRADAS) ---
+# --- BARRA LATERAL: CONFIGURACIÓN Y FLUJO DE DATOS ---
 with st.sidebar:
     st.header("Configuración")
     rid = st.session_state.reset_id
     
-    # Todos los valores regresan a cero para una nueva sesión
-    p = st.number_input("Capital Principal (P)", min_value=0.0, value=0.0, key=f"p_{rid}")
-    tn = st.number_input("Tasa Nominal (j %)", min_value=0.0, value=0.0, format="%.2f", key=f"tn_{rid}")
-    d_tn = st.number_input("Periodo de la TN (días)", min_value=0, value=0, key=f"dtn_{rid}")
-    d_cap = st.number_input("Periodo de Capitalización (días)", min_value=0, value=0, key=f"dcap_{rid}")
-    plazo = st.number_input("Plazo del depósito (días)", min_value=0, value=0, key=f"plazo_{rid}")
+    # Navegación secuencial mediante TAB
+    p = st.number_input("1. Capital Principal (P)", min_value=0.0, value=0.0, key=f"p_{rid}")
+    tn = st.number_input("2. Tasa Nominal (j %)", min_value=0.0, value=0.0, format="%.2f", key=f"tn_{rid}")
+    d_tn = st.number_input("3. Periodo de la TN (días)", min_value=0, value=0, key=f"dtn_{rid}")
+    d_cap = st.number_input("4. Periodo de Capitalización (días)", min_value=0, value=0, key=f"dcap_{rid}")
+    plazo = st.number_input("5. Plazo del depósito (días)", min_value=0, value=0, key=f"plazo_{rid}")
     
+    if d_cap == 0 and rid > 0:
+        st.warning("⚠️ El periodo de capitalización debe ser mayor a 0 para calcular.")
+
     st.write("---")
     st.button("🔄 LIMPIAR PARA NUEVOS DATOS", on_click=limpiar_pantalla)
 
-# --- LÓGICA DE CÁLCULO ---
+# --- LÓGICA DE CÁLCULO PROFESIONAL ---
 if d_cap > 0 and d_tn > 0 and p > 0:
     j = tn / 100
     m = d_tn / d_cap
@@ -120,7 +122,8 @@ with col1: st.metric("Frecuencia (m)", f"{m:.8f}")
 with col2: st.metric("Capitalizaciones (n)", f"{n:.8f}")
 with col3: st.metric("Tasa Efectiva", f"{i_ef:.8f}")
 
-# --- RESULTADOS FINALES SIMÉTRICOS ---
+# --- RESULTADOS FINALES CON IDENTIDAD VISUAL (AZUL) ---
+
 st.markdown(f"""
     <div class='caja-azul'>
         <p class='texto-azul'>MONTO COMPUESTO (S): {s:,.2f}</p>
