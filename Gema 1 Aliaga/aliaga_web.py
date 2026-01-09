@@ -1,26 +1,22 @@
 import streamlit as st
 
-# 1. Configuración y Estética de Marca Dr. Aliaga
+# 1. Configuración de Marca y Estética Dr. Aliaga
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
 st.markdown("""
     <style>
-    /* Centrado total del reporte en la pantalla de PC */
-    .main {
-        display: flex;
-        justify-content: center;
-    }
+    /* Centrado del reporte en pantallas de PC */
     .block-container {
-        max-width: 900px;
+        max-width: 950px;
         padding-top: 1rem;
         padding-bottom: 0rem;
     }
     
-    /* ENCABEZADO ROJO: Ajuste de altura simétrico a los azules */
+    /* ENCABEZADO ROJO: Simetría total con los reportes azules */
     .caja-roja {
         background-color: #FF0000; 
         color: #FFFFFF; 
-        height: 80px;
+        height: 80px; /* Igual que los azules */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -32,24 +28,25 @@ st.markdown("""
         font-weight: bold;
         text-transform: uppercase;
         margin: 0;
+        text-align: center;
     }
     
-    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Tamaño Máximo) */
+    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Posicionamiento Máximo) */
     .marca-personal {
-        font-size: 32px !important;
-        font-weight: 800;
-        color: #1A1A1A;
+        font-size: 36px !important;
+        font-weight: 900;
+        color: #000000;
         text-align: center;
         margin: 15px 0px;
         display: block;
-        font-family: 'Arial Black', Gadget, sans-serif;
+        font-family: 'Arial Black', sans-serif;
     }
     
-    /* RESULTADOS AZUL INTENSO (Simetría total con la roja) */
+    /* RESULTADOS AZUL INTENSO */
     .caja-azul {
         background-color: #0000FF; 
         color: #FFFFFF; 
-        height: 80px;
+        height: 80px; /* Igual que la roja */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -60,14 +57,15 @@ st.markdown("""
     .texto-resultado {
         font-size: 26px !important;
         margin: 0;
+        text-align: center;
     }
     
-    /* Estética de Reportes de Salida */
+    /* Estilo de métricas y reportes */
     .etiqueta-salida {
-        font-size: 20px !important;
+        font-size: 22px !important;
         text-align: center;
         font-weight: bold;
-        margin-top: 10px;
+        margin-top: 5px;
     }
 
     /* Botón de limpieza profesional */
@@ -78,18 +76,18 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Lógica de Reseteo (Limpieza total incluyendo capitalización)
+# 2. Lógica de Reseteo (Limpieza total a 0)
 if "reset_id" not in st.session_state:
     st.session_state.reset_id = 0
 
 def limpiar_interfaz():
     st.session_state.reset_id += 1
 
-# 3. Interfaz Centrada
+# 3. Interfaz Principal Centrada
 st.markdown("<div class='caja-roja'><p class='titulo-mayuscula'>MONTO COMPUESTO CON TASA NOMINAL CAPITALIZABLE</p></div>", unsafe_allow_html=True)
 st.markdown("<span class='marca-personal'>Dr. Carlos Aliaga Valdez</span>", unsafe_allow_html=True)
 
-# --- BARRA LATERAL (ENTRADAS A CERO) ---
+# --- BARRA LATERAL (CONFIGURACIÓN) ---
 with st.sidebar:
     st.header("Configuración")
     rid = st.session_state.reset_id
@@ -104,7 +102,7 @@ with st.sidebar:
     st.write("---")
     st.button("🔄 LIMPIAR PARA NUEVOS DATOS", on_click=limpiar_interfaz)
 
-# --- LÓGICA DE CÁLCULO (Seguridad contra división por cero) ---
+# --- LÓGICA DE CÁLCULO ---
 if d_cap > 0 and d_tn > 0 and p > 0:
     j = tn / 100
     m = d_tn / d_cap
@@ -122,7 +120,7 @@ with col1: st.metric("Frecuencia (m)", f"{m:.8f}")
 with col2: st.metric("Capitalizaciones (n)", f"{n:.8f}")
 with col3: st.metric("Tasa Efectiva", f"{i_ef:.8f}")
 
-# --- RESULTADOS FINALES (AZUL INTENSO SIMÉTRICO) ---
+# --- RESULTADOS FINALES SIMÉTRICOS (AZUL) ---
 st.markdown(f"""
     <div class='caja-azul'>
         <p class='texto-resultado'>MONTO COMPUESTO (S): {s:,.2f}</p>
