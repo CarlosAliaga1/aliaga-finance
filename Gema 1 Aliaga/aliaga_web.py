@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 # 1. Configuración de Marca y Estética Premium Dr. Aliaga
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
-# Script para saltar de campo con la tecla ENTER
+# Script de JavaScript para forzar el salto al siguiente campo al presionar ENTER
 components.html(
     """
     <script>
@@ -26,33 +26,69 @@ components.html(
 
 st.markdown("""
     <style>
-    .block-container { max-width: 900px; padding-top: 1rem; margin: auto; }
+    /* Centrado del reporte en pantalla de PC */
+    .block-container {
+        max-width: 900px;
+        padding-top: 1rem;
+        padding-bottom: 0rem;
+        margin: auto;
+    }
     
-    /* ENCABEZADO ROJO: 80px de alto y centrado vertical */
+    /* ENCABEZADO ROJO: 80px de alto con centrado vertical */
     .caja-roja {
-        background-color: #FF0000; color: #FFFFFF; height: 80px; 
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 12px; margin-bottom: 10px;
+        background-color: #FF0000; 
+        color: #FFFFFF; 
+        height: 80px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        margin-bottom: 10px;
     }
-    .titulo-grande { font-size: 26px !important; font-weight: bold; text-transform: uppercase; margin: 0; }
+    .titulo-grande {
+        font-size: 26px !important; 
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0;
+        text-align: center;
+    }
     
-    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Máximo tamaño) */
+    /* MARCA PERSONAL: Dr. Carlos Aliaga Valdez (Tamaño Máximo) */
     .marca-autor {
-        font-size: 38px !important; font-weight: 900; color: #000000;
-        text-align: center; margin: 10px 0px; display: block; font-family: 'Arial Black', sans-serif;
+        font-size: 38px !important;
+        font-weight: 900;
+        color: #111111;
+        text-align: center;
+        margin: 10px 0px;
+        display: block;
+        font-family: 'Arial Black', sans-serif;
     }
     
-    /* RESULTADOS AZUL INTENSO: 80px de alto */
+    /* RESULTADOS AZUL INTENSO: 80px de alto simétrico */
     .caja-azul {
-        background-color: #0000FF; color: #FFFFFF; height: 80px; 
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 12px; margin-top: 10px;
+        background-color: #0000FF; 
+        color: #FFFFFF; 
+        height: 80px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px; 
+        margin-top: 10px;
     }
-    .texto-azul { font-size: 26px !important; font-weight: bold; margin: 0; }
+    .texto-azul {
+        font-size: 26px !important;
+        font-weight: bold;
+        margin: 0;
+    }
     
-    .etiqueta-reporte { font-size: 22px !important; text-align: center; font-weight: bold; margin-top: 5px; }
+    .etiqueta-reporte {
+        font-size: 22px !important;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 5px;
+    }
 
-    /* Botón de limpieza */
+    /* Botón de limpieza profesional */
     div.stButton > button { 
         width: 100%; font-weight: bold; font-size: 16px;
         color: #0000FF; border: 2px solid #0000FF; border-radius: 8px;
@@ -60,14 +96,14 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Lógica de Reseteo (Campos en blanco)
+# 2. Lógica de Reseteo Integral (Campos en blanco)
 if "reset_id" not in st.session_state:
     st.session_state.reset_id = 0
 
 def limpiar_pantalla():
     st.session_state.reset_id += 1
 
-# 3. Estructura Visual Principal
+# 3. Interfaz Visual
 st.markdown("<div class='caja-roja'><p class='titulo-grande'>MONTO COMPUESTO CON TASA NOMINAL CAPITALIZABLE</p></div>", unsafe_allow_html=True)
 st.markdown("<span class='marca-autor'>Dr. Carlos Aliaga Valdez</span>", unsafe_allow_html=True)
 
@@ -76,13 +112,14 @@ with st.sidebar:
     st.header("Configuración")
     rid = st.session_state.reset_id
     
-    # Todos los campos inician vacíos "" al resetear
+    # Uso de text_input para permitir que el campo quede vacío ("") al resetear
     p_in = st.text_input("1. Capital Principal (P)", value="", key=f"p_{rid}")
     tn_in = st.text_input("2. Tasa Nominal (j %)", value="", key=f"tn_{rid}")
     dtn_in = st.text_input("3. Periodo de la TN (días)", value="", key=f"dtn_{rid}")
     dcap_in = st.text_input("4. Periodo de Capitalización (días)", value="", key=f"dcap_{rid}")
     plazo_in = st.text_input("5. Plazo de la inversión (días)", value="", key=f"plazo_{rid}")
     
+    # Conversión de texto a número para el motor de cálculo
     try:
         p = float(p_in) if p_in else 0.0
         tn = float(tn_in) if tn_in else 0.0
@@ -113,8 +150,7 @@ with col1: st.metric("Frecuencia (m)", f"{m:.8f}")
 with col2: st.metric("Capitalizaciones (n)", f"{n:.8f}")
 with col3: st.metric("Tasa Efectiva", f"{i_ef:.8f}")
 
-# --- RESULTADOS FINALES (AZUL) ---
-
+# --- RESULTADOS FINALES EN AZUL ---
 st.markdown(f"""
     <div class='caja-azul'>
         <p class='texto-azul'>MONTO COMPUESTO (S): {s:,.2f}</p>
