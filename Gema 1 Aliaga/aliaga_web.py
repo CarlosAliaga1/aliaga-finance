@@ -12,7 +12,7 @@ st.markdown("### Dr. Carlos Aliaga Valdez")
 with st.sidebar:
     st.header("Configuración del Modelo")
     p = st.number_input("Capital Principal (P)", min_value=0.0, value=10000.0)
-    j_porc = st.number_input("Tasa Nominal Anual (j %)", min_value=0.0, value=12.0)
+    tasa_nominal = st.sidebar.number_input("Tasa Nominal (j %)", value=2.0, step=0.1, format="%.2f")
     dias_tn = st.number_input("Periodo de la TN (días)", value=360)
     dias_cap = st.number_input("Periodo de Capitalización (días)", value=45)
     plazo_total = st.number_input("Plazo del depósito (días)", value=180)
@@ -40,3 +40,4 @@ data = pd.DataFrame({
 })
 
 st.bar_chart(data=data, x="Categoría", y="Monto")
+
