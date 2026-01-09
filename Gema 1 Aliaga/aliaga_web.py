@@ -3,22 +3,22 @@ import streamlit as st
 # 1. Configuración de página y Títulos
 st.set_page_config(page_title="Aliaga Finance Pro", layout="wide")
 
-# 2. LÓGICA DE RESETEO (Manejo de memoria del navegador)
+# 2. LÓGICA DE RESETEO (Sin errores de callback)
 if "reset_key" not in st.session_state:
     st.session_state.reset_key = 0
 
+# Función que limpia la memoria al presionar el botón
 def reset_total():
     st.session_state.reset_key += 1
-    st.rerun()
 
 st.title("Monto compuesto con TN capitalizable")
 st.markdown("### Dr. Carlos Aliaga Valdez")
 
-# --- BARRA LATERAL (ENTRADAS CON LLAVE DE RESETEO) ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.header("Configuración del Modelo")
     
-    # Cada campo tiene una 'key' única vinculada al estado de reseteo
+    # Cada entrada usa una 'key' que cambia cuando reseteamos
     p = st.number_input("Capital Principal (P)", min_value=0.0, value=10000.0, key=f"p_{st.session_state.reset_key}")
     tasa_nominal = st.number_input("Tasa Nominal (j %)", value=2.0, step=0.1, format="%.2f", key=f"tn_{st.session_state.reset_key}")
     dias_tn = st.number_input("Periodo de la TN (días)", value=30, key=f"dtn_{st.session_state.reset_key}")
@@ -26,14 +26,15 @@ with st.sidebar:
     plazo_total = st.number_input("Plazo del depósito (días)", value=180, key=f"plazo_{st.session_state.reset_key}")
     
     st.write("---")
-    # Este botón ahora ejecuta la función de limpieza total
+    # Al hacer clic, se activa la función reset_total
     st.button("🔄 Resetear Información", on_click=reset_total)
 
-# --- LÓGICA DE CÁLCULO ---
+# --- LÓGICA DE CÁLCULO (Réplica de Windows) ---
 j = tasa_nominal / 100
-m = dias_tn / dias_cap
-n = plazo_total / dias_cap
-i_efectiva = j / m
+m = dias_tn / dias_cap           # Frecuencia
+n = plazo_total / dias_cap       # Capitalizaciones
+i_efectiva = j / m               # Tasa efectiva del periodo
+
 s = p * (1 + i_efectiva)**n
 interes_i = s - p
 
